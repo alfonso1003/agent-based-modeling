@@ -1,0 +1,46 @@
+Instructions
+Model Questionnaire
+
+These questions are intended to focus your thoughts on a phenomenon for which you would eventually like to build an ABM model. It is important to choose a phenomenon of limited scope so that you can make progress with your model.  Even if the phenomenon you would eventually like to address is large in scope, try to choose a sub-part of it as a starting point. For this assignment you do not need to submit any code, just answers to the following questions.
+
+(1) What part of your phenomenon would you like to build a model of?  Make sure that the phenomenon is appropriate for an agent-based model that could be completed in the next month.
+
+I'd like to model a penalty shootout in a football match. When the game ends in a tie and a winner has to be declared, such as in a tournament final game, then there's a shootout. Each team will pick five players, and they will each take turns taking a penalty kick against the opposing goalkeeper. The shot is taken from a distance of 11 meters (12 yards). At that distance, the goalkeeper has to guess where the ball will be kicked because there's no time and is almost physically impossible to determine this at the time. Often the goalkeeper will be briefed by the coaches on the tendencies of the kickers to help them correctly guess.
+
+(2) What are the principal types of agents involved in this phenomenon?  Illustrate all of the agent types necessary for the model.
+
+In this simulation, there will need to be two agents -- a goalkeeper and a penalty taker.
+
+(3)   What properties do these agents have (describe by agent type)?  Describe for all agent types.
+
+The penalty taker will have a list of percentages that would relate to their preferred place to kick the ball. For example, dividing the goal into quadrants, the penalty taker might have a list of percentages that map to the quadrants. For example, a random kicking strategy would be represented by [ 0.25 0.25 0.25 0.25 ].
+
+A goalkeeper might have a similar list for each opponent where they believe the penalty taker will shoot. A goalkeeper would be able to modify their strategy over time.
+
+(4)   What actions (or behaviors) can these agents take (describe by agent type)? Describe all appropriate behaviors for all agent types.
+
+A penalty taker would "kick" a penalty while a goalkeeper would "dive" or otherwise move to a location at the goal.
+
+(5)   In what kind of environment do these agents operate? Describe the basic environment type (e.g., spatial, network, featurespace, etc.) and fully describe the environment.
+
+The environment I imagine for this model would be a spatial area representing the goal face divided into quadrants. A goal kick would be sent to a specific quadrant and a goalkeeper would simulatenously move to a quadrant.
+
+(6)   If you had to “discretize” the phenomenon into time steps, what events and in what order would occur during any one time step? Fully describe everything that happens during a time step.
+
+At every discrete time step, a kick would be sent to the goal and a goalkeeper would guess a location to dive to.
+
+At every time step, the location of the kick and the goalkeeper dive would be determined by their strategy, i.e., their strategy (list of percentages).
+
+The strategy could update at the end of every turn.
+
+(7)   What are the inputs to the model? Identify all relevant inputs.
+
+The inputs would be the penalty taker's and goalkeeper's strategies.
+
+(8)   What do you hope to observe from this model? Identify all relevant outputs.
+
+I'd like to observe how various strategies work out for both the kicker and goalkeeper.
+
+For outputs, I would keep track of the goals scored, saves, goal percentage, and save percentage. A goal is scored when a penalty taker chooses a location that is different from the location the goalkeeper guessed. A save occurs when the penalty taker and goalkeeper choose the same location for their kick and dive, respectively. Goal percentage is defined as goals scored divided by ticks. Save percentage is defined as saves divided by ticks. The sum of goal percentage and save percentage will equal 1 in my simulation.
+
+After a large amount of timestamps, the strategies might converge to a final save and goal percentages. We could compare these final numbers to random chance to determine how effective each strategy is.
