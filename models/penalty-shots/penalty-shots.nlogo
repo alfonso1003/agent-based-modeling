@@ -230,10 +230,10 @@ ticks
 30.0
 
 BUTTON
-30
-35
-123
-83
+57
+78
+150
+126
 set up
 setup
 NIL
@@ -247,25 +247,25 @@ NIL
 1
 
 SLIDER
-32
-100
-230
-133
+56
+19
+254
+52
 zones
 zones
 2
 8
-2.0
+8.0
 2
 1
 NIL
 HORIZONTAL
 
 BUTTON
-134
-37
-227
-85
+161
+80
+254
+128
 go
 go
 T
@@ -358,7 +358,7 @@ MONITOR
 288
 313
 Shooter Zone Probabilities
-map [value -> precision (value * 100) 2] shooter-zone-probabilities
+map [value -> precision (value * 100) 1] shooter-zone-probabilities
 2
 1
 11
@@ -366,39 +366,92 @@ map [value -> precision (value * 100) 2] shooter-zone-probabilities
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+This simulation models a penalty shootout in a football match. When a game ends in a tie score but a winner must be declared, such as in a tournament elimination game, then there's a shootout. Each team will select five players and alternate turns at taking penalty kicks. A penalty kick is a one-on-one matchup between a kicker and a goalkeeper. The shot is taken from a distance of 11 meters (~12 feet). At that distance, the goalkeeper has to guess where the ball will be kicked because there's no time to decide based on observation -- it's almost physically impossible. Often the goalkeeper will be briefed by coaches on the tendencies of the kickers to help them guess correctly. Goalkeepers also have tendencies which kickers hope to exploit.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+In this simulation, there will need to be two agents -- a goalkeeper and a penalty taker. The environment will be the goal face that is divided into zones.
+
+
+### Goal Face
+
+The goal face is a spatial zone represented by the main interface square and divided into zones of size 2, 4, 6, or 8. The zones are areas of the goal face where kickers aim for and the goalkeeper guesses.
+
+### Goalkeeper
+
+The goalkeeper is represented by a human icon. The goalkeeper starts off with a strategy of guessing each zone with equal chance. For example, if there are 4 zones in the goal face, then the keeper will start off with a strategy of  [ 0.25 0.25 0.25 0.25 ] which represents the probability of guessing one of the four zones.
+
+At each iteration, the goalkeeper will update their guessing strategy based on actual gameplay and where the kicker is actually aiming.
+
+### Kicker
+
+The kicker will have a list of percentages that would relate to their preferred place to kick the ball. In this model, the kicker is initialized with a random strategy. For example, if there are four zones, then a kicker would have a strategy of probabilities [ w, x, y, z] where 0 <= w, x, y, z <= 1 and w + x + y + z = 1.
+
+A kicker is represented by a red dot in the goal face, so it might be accurate to say that the model actually represent a kick location. For talking about the model intuitively, I prefer to say that the agent is a kicker though.
+
+### Iterations
+
+At each iteration, a kicker will "kick" a ball to a zone, while a goalkeeper would "dive" or otherwise move to a location at the goal. The location of the kick and the goalkeeper dive would be determined by their strategy, i.e., their list of zone percentages.
+
+The kicker will keep their random strategy while the goalkeeper updates their strategy based on what the kicker is doing over time.
+
+At each iteration, the goalkeeper will move to the center of a zone. The kick will also be displayed at the center of a zone. If the kick and goalkeeper are at the same zone, then a "save" is recorded. If the kick and goalkeeper are at different zones, then a "goal" is recorded.
+
+After a large amount of timestamps, the strategies converge to a final save and goal percentages. We can compare these final numbers to random chance to determine how effective the goalkeeper is.
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+First, select the amount of zones in the goal face. There is a slider where you can select 2, 4, 6, or 8 zones. Then, click "Set Up"
+
+After selecting and setting up the amount of zones, click the "Go" button to watch the simulation. To stop the simulation, press "Go" again.
+
+To reset a simulation, first make sure the simulation is stopped (press "Go" until the simulation stops running). Next, press "Reset" to clear the data and start again.
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+More importantly, I added several outputs to keep track of: shots, goals, goal percentage, saves, and save percentage. Goal percentage is defined as goals scored divided by ticks. Save percentage is defined as saves divided by ticks. The sum of goal percentage and save percentage will equal 1 in my simulation. I update the numbers at each iteration.
+
+I also display the kicker's strategy. (Unfortunately, I was unable to display the goalkeeper's strategy. I will have to fix this in a future iteration. I did print out the goalkeeper's strategy, and I can confirm that it does converge to the kicker's strategy over time.)
+
+Finally, the save percentage is displayed over time in a line chart. There is a red line representing random chance. For example, if there are four zones, then a goalkeeper guessing randomly against a random kick will theoretically have a 25% save percentage. If the save percentage is over the red line, then that indicates a save strategy that is better than random chance.
+
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+You can try setting the number of zones in the goal face. Also, try resetting the model and observing the kicker strategy. Sometimes you will get strategies heavily skewed to certain zones. I found the more skewed a kicker's random strategy is, then the more effective the goalkeeper becomes over time.
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+
+### Better suited  as a probabilistic model, as is
+This is a very early and simplified iteration. It's so simple, in fact, that this would be better run as a probabilistic model in an Excel spreadsheet or as a Python script.
+
+### Adding kickers
+Currently the simulation is a goalkeeper vs a single kicker. I have plans to extend this script so that a keeper faces five kickers, to be more realistic.
+
+### Strategy Updates
+In the simulation against five kickers, the goalkeeper will keep and update a single strategy against each of the kickers. The keeper will also maintain a single overall strategy that represents all the kickers. Each goalkeeper guess per iteration will be a weighted guess between the individual kicker strategy and the overall strategy. The weights can be adjusted.
+
+The kickers will also update their strategies based on their individual and the group's overall past perfomances.
+
+Also, I would like to addthe ability to either 1) input the strategy percentage lists or 2) have it randomly determined.
+
+### Introducing Skill
+
+Finally, I think it would be a good idea to add skill to the game. In the model's current iteration, the kickers are guaranteed to place the kick where they aim and the goalkeeper is guaranteed to arrive at their intended location. In real life, players aren't able to always complete their intended action.
+
 
 ## NETLOGO FEATURES
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+I'm quite proud of the geometry (mostly division!) I used to display the zones. Please take a look at the code and see how I generalized dividing the goal face into an even number of zones. (For simplicity, I decided against dividing the goal face into odd numbers of zones)
 
 ## RELATED MODELS
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+I found the NetLogo documentation to be very helpful and thorough. Apart from the models presented in class, I mostly relied on the documentation.
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+I'd like to link to the github repository, but the instructions say not to include identifiable information!
 @#$#@#$#@
 default
 true
@@ -722,5 +775,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@
